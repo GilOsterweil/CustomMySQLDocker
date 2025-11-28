@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   mysql:
-    image: ghcr.io/GilOsterweil/custom-mysql/mysql:latest
+    image: ghcr.io/gilosterweil/custom-mysql/mysql:latest
     container_name: mysql
     restart: always
     environment:
@@ -16,7 +16,7 @@ services:
       - mysql_data:/var/lib/mysql
 
   cloudbeaver:
-    image: ghcr.io/GilOsterweil/custom-mysql/cloudbeaver:latest
+    image: ghcr.io/gilosterweil/custom-mysql/cloudbeaver:latest
     container_name: cloudbeaver
     restart: always
     ports:
