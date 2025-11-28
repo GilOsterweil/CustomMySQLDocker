@@ -72,7 +72,7 @@ jobs:
 
       - name: Create test file
         run: |
-          cat << 'EOF' > test.js
+          cat << 'EOF' > test.test.js
           test('dummy', () => {
             expect(1+1).toBe(2);
           });
