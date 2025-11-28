@@ -57,7 +57,7 @@ jobs:
         run: |
           docker run -d --name cloudbeaver-test \
             -p 8978:8978 \
-            ghcr.io/${{ needs.build.outputs.owner_lc }}/${{ needs.build.outputs.repo_lc }}/cloudbeaver:latest
+            ghcr.io/gilosterweil/custom-mysql/cloudbeaver:latest
 
       - name: Wait for CloudBeaver to boot
         run: |
@@ -90,3 +90,9 @@ jobs:
           EOF
 
           npx playwright test test.js
+      
+      - name: Upload snapshot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudbeaver-snapshot
+          path: cloudbeaver_snapshot.png
