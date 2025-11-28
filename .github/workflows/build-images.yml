@@ -83,22 +83,29 @@ jobs:
           cat > test.test.js << 'EOF'
           const { test, expect } = require("@playwright/test");
 
-          test("CloudBeaver shows MySQL connection", async ({ page }) => {
-            await page.goto("http://localhost:8978");
-            
-            try {
-              // Wait for the main UI to load (CloudBeaver login-free UI)
-              await page.waitForFunction(() => {
-                const main = document.querySelector('main');
-                return main && main.children.length > 0;
-              }, { timeout: 300000 }); // 5 minutes
-            } catch (e) {
-              console.log("Timeout waiting for main UI:", e.message);
-            } finally {
-              // Take a screenshot no matter what
-              await page.screenshot({ path: "cloudbeaver_snapshot.png", fullPage: true });
+          async function waitForMain(page, maxMs = 300000, intervalMs = 2000) {
+            const start = Date.now();
+            while (Date.now() - start < maxMs) {
+              try {
+                const mainHasChildren = await page.evaluate(() => {
+                  const main = document.querySelector('main');
+                  return main && main.children.length > 0;
+                });
+                if (mainHasChildren) return true;
+              } catch (e) {}
+              await page.waitForTimeout(intervalMs);
             }
-          });
+            return false; // timeout reached
+          }
+
+          test('CloudBeaver shows MySQL connection', async ({ page }) => {
+            await page.goto('https://your-cloudbeaver-url');
+
+            const loaded = await waitForMain(page);
+            await page.screenshot({ path: loaded ? "cloudbeaver_loaded.png" : "cloudbeaver_timeout.png", fullPage: true });
+
+            if (!loaded) throw new Error("Main UI did not load in time");
+          }, 360000);
           EOF
 
           npx playwright test test.test.js
