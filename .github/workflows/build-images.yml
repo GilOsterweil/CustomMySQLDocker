@@ -77,16 +77,10 @@ jobs:
             expect(1+1).toBe(2);
           });
           EOF
-      
-      - name: Debug — show working dir
-        run: pwd
 
-      - name: Debug — list files
-        run: ls -R .
-      
       - name: Run Playwright snapshot test
         run: |
-          cat > test.js << 'EOF'
+          cat > test.test.js << 'EOF'
           const { test, expect } = require("@playwright/test");
 
           test("CloudBeaver shows MySQL connection", async ({ page }) => {
@@ -103,7 +97,7 @@ jobs:
           });
           EOF
 
-          npx playwright test test.js
+          npx playwright test test.test.js
       
       - name: Upload snapshot artifact
         uses: actions/upload-artifact@v4
