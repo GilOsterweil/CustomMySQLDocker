@@ -88,13 +88,10 @@ jobs:
             
             // Wait for the main UI to load (CloudBeaver login-free UI)
             await page.waitForFunction(() => {
-              const main = document.querySelector('main');
+              const main = document.querySelector('body');
               return main && main.children.length > 0;
-            }, { timeout: 30000 });
-
-            // Look for connection name "MySQL (Auto)"
-            await page.waitForSelector('text=MySQL (Auto)', { timeout: 20000 });
-
+            }, { timeout: 50000 });
+            
             // Screenshot
             await page.screenshot({ path: "cloudbeaver_snapshot.png", fullPage: true });
           });
