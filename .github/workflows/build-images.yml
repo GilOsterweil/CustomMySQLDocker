@@ -26,16 +26,16 @@ jobs:
 
       - name: Build MySQL image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/mysql:latest ./mysql
+          docker build -t ghcr.io/gilosterweil/custom-mysql/mysql:latest ./mysql
 
       - name: Push MySQL image
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/mysql:latest
+          docker push ghcr.io/gilosterweil/custom-mysql/mysql:latest
 
       - name: Build CloudBeaver image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/cloudbeaver:latest ./cloudbeaver
+          docker build -t ghcr.io/gilosterweil/custom-mysql/cloudbeaver:latest ./cloudbeaver
 
       - name: Push CloudBeaver image
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/cloudbeaver:latest
+          docker push ghcr.io/gilosterweil/custom-mysql/cloudbeaver:latest
