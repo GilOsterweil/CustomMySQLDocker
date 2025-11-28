@@ -16,7 +16,7 @@ services:
       - mysql_data:/var/lib/mysql
 
   cloudbeaver:
-    image: ghcr.io/<USER>/<REPO>/cloudbeaver:latest
+    image: ghcr.io/GilOsterweil/custom-mysql/cloudbeaver:latest
     container_name: cloudbeaver
     restart: always
     ports:
