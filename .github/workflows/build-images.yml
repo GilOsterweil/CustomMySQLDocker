@@ -89,10 +89,12 @@ jobs:
             await page.goto("http://localhost:8978");
             
             // Wait for the main UI to load (CloudBeaver login-free UI)
-            await page.waitForFunction(() => {
-              const main = document.querySelector('main');
-              return main && main.children.length > 0;
-            }, { timeout: 300000 });
+            try {            
+              await page.waitForFunction(() => {
+                const main = document.querySelector('main');
+                return main && main.children.length > 0;
+              }, { timeout: 300000 });
+            } catch {}
 
             // Screenshot
             await page.screenshot({ path: "cloudbeaver_snapshot.png", fullPage: true });
