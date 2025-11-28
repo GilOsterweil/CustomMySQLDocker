@@ -39,3 +39,54 @@ jobs:
       - name: Push CloudBeaver image
         run: |
           docker push ghcr.io/gilosterweil/custom-mysql/cloudbeaver:latest
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install @playwright/test
+          npx playwright install --with-deps
+
+      - name: Start CloudBeaver container
+        run: |
+          docker run -d --name cloudbeaver-test \
+            -p 8978:8978 \
+            ghcr.io/${{ needs.build.outputs.owner_lc }}/${{ needs.build.outputs.repo_lc }}/cloudbeaver:latest
+
+      - name: Wait for CloudBeaver to boot
+        run: |
+          for i in {1..40}; do
+            if curl -s http://localhost:8978 >/dev/null; then
+              echo "CloudBeaver is up!"
+              break
+            fi
+            echo "Waiting for CloudBeaver..."
+            sleep 3
+          done
+
+      - name: Run Playwright snapshot test
+        run: |
+          cat > test.js << 'EOF'
+          const { test, expect } = require("@playwright/test");
+
+          test("CloudBeaver shows MySQL connection", async ({ page }) => {
+            await page.goto("http://localhost:8978");
+            
+            // Wait for the main UI to load (CloudBeaver login-free UI)
+            await page.waitForSelector('.app-navigation', { timeout: 20000 });
+
+            // Look for connection name "MySQL (Auto)"
+            await page.waitForSelector('text=MySQL (Auto)', { timeout: 20000 });
+
+            // Screenshot
+            await page.screenshot({ path: "cloudbeaver_snapshot.png", fullPage: true });
+          });
+          EOF
+
+          npx playwright test test.js
