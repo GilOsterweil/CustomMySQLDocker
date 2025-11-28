@@ -95,7 +95,7 @@ jobs:
                 });
                 if (mainHasChildren) return true;
               } catch (e) {}
-              await page.waitForTimeout(intervalMs);
+              return true;
             }
             return false; // timeout reached
           }
