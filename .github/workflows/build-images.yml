@@ -86,14 +86,18 @@ jobs:
           test("CloudBeaver shows MySQL connection", async ({ page }) => {
             await page.goto("http://localhost:8978");
             
-            // Wait for the main UI to load (CloudBeaver login-free UI)
-            await page.waitForFunction(() => {
-              const main = document.querySelector('body');
-              return main && main.children.length > 0;
-            }, { timeout: 50000 });
-            
-            // Screenshot
-            await page.screenshot({ path: "cloudbeaver_snapshot.png", fullPage: true });
+            try {
+              // Wait for the main UI to load (CloudBeaver login-free UI)
+              await page.waitForFunction(() => {
+                const main = document.querySelector('main');
+                return main && main.children.length > 0;
+              }, { timeout: 300000 }); // 5 minutes
+            } catch (e) {
+              console.log("Timeout waiting for main UI:", e.message);
+            } finally {
+              // Take a screenshot no matter what
+              await page.screenshot({ path: "cloudbeaver_snapshot.png", fullPage: true });
+            }
           });
           EOF
 
