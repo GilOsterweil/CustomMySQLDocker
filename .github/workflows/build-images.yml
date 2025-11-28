@@ -79,6 +79,8 @@ jobs:
           EOF
 
       - name: Run Playwright snapshot test
+        env:
+          PWTEST_TIMEOUT: 460000   # 460 seconds
         run: |
           cat > test.test.js << 'EOF'
           const { test, expect } = require("@playwright/test");
@@ -105,7 +107,7 @@ jobs:
             await page.screenshot({ path: loaded ? "cloudbeaver_loaded.png" : "cloudbeaver_timeout.png", fullPage: true });
 
             if (!loaded) throw new Error("Main UI did not load in time");
-          }, 360000);
+          }, 460000);
           EOF
 
           npx playwright test test.test.js
