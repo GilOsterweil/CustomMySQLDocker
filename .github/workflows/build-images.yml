@@ -1,0 +1,41 @@
+name: Build and Publish Custom Images
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build MySQL image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/mysql:latest ./mysql
+
+      - name: Push MySQL image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/mysql:latest
+
+      - name: Build CloudBeaver image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/cloudbeaver:latest ./cloudbeaver
+
+      - name: Push CloudBeaver image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/cloudbeaver:latest
