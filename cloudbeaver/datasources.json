@@ -1,0 +1,15 @@
+{
+  "connections": [
+    {
+      "id": "mysql_preconfigured",
+      "name": "MySQL (Auto)",
+      "driverId": "mysql",
+      "host": "mysql",
+      "port": 3306,
+      "database": "appdb",
+      "user": "appuser",
+      "password": "apppass",
+      "savePassword": true
+    }
+  ]
+}
