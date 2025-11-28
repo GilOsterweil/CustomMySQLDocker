@@ -69,6 +69,14 @@ jobs:
             echo "Waiting for CloudBeaver..."
             sleep 3
           done
+          
+      - name: Create test file
+        run: |
+          cat << 'EOF' > test.js
+          test('dummy', () => {
+            expect(1+1).toBe(2);
+          });
+          EOF
 
       - name: Run Playwright snapshot test
         run: |
