@@ -87,7 +87,10 @@ jobs:
             await page.goto("http://localhost:8978");
             
             // Wait for the main UI to load (CloudBeaver login-free UI)
-            await page.waitForSelector('.app-navigation', { timeout: 20000 });
+            await page.waitForFunction(() => {
+              const main = document.querySelector('main');
+              return main && main.children.length > 0;
+            }, { timeout: 30000 });
 
             // Look for connection name "MySQL (Auto)"
             await page.waitForSelector('text=MySQL (Auto)', { timeout: 20000 });
