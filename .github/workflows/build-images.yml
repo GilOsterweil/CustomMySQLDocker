@@ -99,7 +99,7 @@ jobs:
           }
 
           test('CloudBeaver shows MySQL connection', async ({ page }) => {
-            await page.goto('https://your-cloudbeaver-url');
+            await page.goto('http://localhost:8978');
 
             const loaded = await waitForMain(page);
             await page.screenshot({ path: loaded ? "cloudbeaver_loaded.png" : "cloudbeaver_timeout.png", fullPage: true });
