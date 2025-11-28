@@ -77,7 +77,7 @@ jobs:
             expect(1+1).toBe(2);
           });
           EOF
-
+         
       - name: Run Playwright snapshot test
         env:
           PWTEST_TIMEOUT: 460000   # 460 seconds
@@ -85,31 +85,18 @@ jobs:
           cat > test.test.js << 'EOF'
           const { test, expect } = require("@playwright/test");
 
-          async function waitForMain(page, maxMs = 300000, intervalMs = 2000) {
-            const start = Date.now();
-            while (Date.now() - start < maxMs) {
-              try {
-                const mainHasChildren = await page.evaluate(() => {
-                  const main = document.querySelector('main');
-                  return main && main.children.length > 0;
-                });
-                if (mainHasChildren) return true;
-              } catch (e) {}
-              try {
-                await page.waitForTimeout(intervalMs);
-              } catch (e) {}
-            }
-            return false; // timeout reached
-          }
+          test("CloudBeaver shows MySQL connection", async ({ page }) => {
+            await page.goto("http://localhost:8978");
+            
+            // Wait for the main UI to load (CloudBeaver login-free UI)
+            await page.waitForFunction(() => {
+              const main = document.querySelector('main');
+              return main && main.children.length > 0;
+            }, { timeout: 300000 });
 
-          test('CloudBeaver shows MySQL connection', async ({ page }) => {
-            await page.goto('http://localhost:8978');
-
-            const loaded = await waitForMain(page);
-            await page.screenshot({ path: loaded ? "cloudbeaver_loaded.png" : "cloudbeaver_timeout.png", fullPage: true });
-
-            if (!loaded) throw new Error("Main UI did not load in time");
-          }, 460000);
+            // Screenshot
+            await page.screenshot({ path: "cloudbeaver_snapshot.png", fullPage: true });
+          });
           EOF
 
           npx playwright test test.test.js
